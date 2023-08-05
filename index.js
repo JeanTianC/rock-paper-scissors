@@ -1,36 +1,61 @@
 const rpsArray = ["rock", "paper", "scissors"];
+const btns = document.querySelectorAll("button");
+let playerScoreTotal = 0;
+let computerScoreTotal = 0;
+let playerScore;
+let computerScore;
+let roundNum = 0;
 
-function game() {
-  let playerScore = 0;
-  let computerScore = 0;
-  for (let i = 1; i <= 5; i++) {
+btns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    const playerSelection = e.target.closest("button").id;
     const computerSelection = getComputerChoice();
-    const playerSelection = prompt(
-      "Please input your selection?Rock,Paper,Scissors"
-    ).toLowerCase();
-    const winner = playRound(playerSelection, computerSelection);
+    const roundText = playRound(playerSelection, computerSelection);
+    roundNum++;
 
-    console.log(`computer selection is ${computerSelection}`);
-    console.log(winner);
+    document.querySelector(
+      ".round"
+    ).textContent = `Round${roundNum}:${roundText}`;
 
-    if (winner === "You win!") {
-      playerScore++;
-    } else if (winner === "You lose!") {
-      computerScore++;
+    winner();
+
+    console.log(computerScoreTotal, playerScoreTotal);
+
+    if (computerScoreTotal === 5 || playerScoreTotal === 5) {
+      endGame();
+      setTimeout(function () {
+        if (computerScoreTotal === 5) {
+          document.getElementById(
+            "winner-message"
+          ).innerHTML = `<h1 id="winner">You lose😿😿😿!</h1>`;
+        } else if (playerScoreTotal === 5) {
+          document.getElementById(
+            "winner-message"
+          ).innerHTML = `<h1 id="winner">  You win! 🎉🎉🎉</h1>`;
+        }
+        document.getElementById("game-box").classList.add("hidden");
+        computerScoreTotal = 0;
+        playerScoreTotal = 0;
+      }, 1000);
     }
-    console.log(
-      `You score is ${playerScore},computer score is ${computerScore}`
-    );
-  }
 
-  console.log(`You score is ${playerScore},computer score is ${computerScore}`);
+    document.getElementById("computerscore").textContent = computerScoreTotal;
+    document.getElementById("playerscore").textContent = playerScoreTotal;
+  });
+});
 
-  if (playerScore > computerScore) {
-    console.log("You win!");
-  } else if (playerScore < computerScore) {
-    console.log("You lose!");
-  } else {
-    console.log("Nobody wins!");
+function endGame() {
+  btns.forEach((btn) => {
+    btn.disabled = true;
+    btn.style.backgroundColor = "gray";
+  });
+}
+
+function winner() {
+  if (playerScore === 1) {
+    playerScoreTotal++;
+  } else if (computerScore === 1) {
+    computerScoreTotal++;
   }
 }
 
@@ -40,8 +65,8 @@ function getComputerChoice() {
 }
 
 function playRound(playerSelection, computerSelection) {
-  let playerScore = 0;
-  let computerScore = 0;
+  computerScore = 0;
+  playerScore = 0;
 
   if (playerSelection === computerSelection) {
     return "Nobody Wins";
@@ -50,41 +75,30 @@ function playRound(playerSelection, computerSelection) {
   if (playerSelection === "rock") {
     if (computerSelection === "paper") {
       computerScore = 1;
-      // return "You lose ! Paper beats Rock";
     } else if (computerSelection === "scissors") {
       playerScore = 1;
-      // return "You win ! Rock beats Scissors";
     }
   }
 
   if (playerSelection === "paper") {
     if (computerSelection === "rock") {
       playerScore = 1;
-      // return "You win ! Paper beats Rock";
     } else if (computerSelection === "scissors") {
       computerScore = 1;
-      // return "You lose ! Scissors beats Paper";
     }
   }
 
   if (playerSelection === "scissors") {
     if (computerSelection === "rock") {
       computerScore = 1;
-      // return "You lose !  Scissors beats Rock";
     } else if (computerSelection === "paper") {
       playerScore = 1;
-      // return "You win ! Scissors beats Paper";
     }
   }
 
   if (playerScore === 1) {
-    return "You win!";
+    return "You Score +1";
   } else if (computerScore === 1) {
-    return "You lose!";
+    return "Computer Score +1";
   }
 }
-
-// console.log(`computer selection is ${computerSelection}`);
-// console.log(playRound(playerSelection, computerSelection));
-// console.log(computerScore, playerScore);
-game();
